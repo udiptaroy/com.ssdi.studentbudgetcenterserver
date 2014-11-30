@@ -106,8 +106,8 @@ public class UserTableDataGateway {
 	      // Assuming you are sending email from localhost
 	      properties.put("mail.smtp.starttls.enable", "true"); 
 	      properties.put("mail.smtp.host", "smtp.gmail.com");
-	      properties.put("mail.smtp.user", "udiptaroy"); // User name
-	      properties.put("mail.smtp.password", "focus123#"); // password
+	      properties.put("mail.smtp.user", ""); // User name
+	      properties.put("mail.smtp.password", ""); // password
 	      properties.put("mail.smtp.port", "587");
 	      properties.put("mail.smtp.auth", "true");
 
@@ -122,7 +122,7 @@ public class UserTableDataGateway {
 	    		    new javax.mail.Authenticator(){
 	    		        protected PasswordAuthentication getPasswordAuthentication() {
 	    		            return new PasswordAuthentication(
-	    		                "udiptaroy@gmail.com", "focus123#");// Specify the Username and the PassWord
+	    		                "", "");// Specify the Username and the PassWord
 	    		        }
 	    		});
 
