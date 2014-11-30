@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,12 +32,25 @@ public class UserServlet {
 		if(methodName.equalsIgnoreCase("login")){
 			UserController userCon = new UserController();
 			str = userCon.getUser(servletRequest.getParameterMap());
+			if(str.equals("SUCCESS")){
+				HttpSession session=servletRequest.getSession();
+				session.setAttribute("user",  servletRequest.getParameterMap().get("username")[0]);
+			}
 		}
 		else if(methodName.equalsIgnoreCase("register")){
 			UserController userCon = new UserController();
 			str = userCon.createUser(servletRequest.getParameterMap());
+			if(str.equals("SUCCESS")){
+				HttpSession session=servletRequest.getSession();
+				session.setAttribute("user",  servletRequest.getParameterMap().get("username2")[0]);
+			}
 		}
-
+		else if(methodName.equalsIgnoreCase("setbudgoals")){
+			HttpSession session=servletRequest.getSession();
+			String username=(String)session.getAttribute("user");
+			UserController userCon = new UserController();
+		str = userCon.createBudget(username,servletRequest.getParameterMap());
+		}
 		return createJsonString(str);
 	}
 

@@ -1,10 +1,13 @@
 package com.ssdi.studentbudgetcentercontroller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
+import com.ssdi.studentbudgetcenterTDGateway.BudgetItemTableDataGateway;
 import com.ssdi.studentbudgetcenterTDGateway.UserTableDataGateway;
 import com.ssdi.studentbudgetcenterentity.BankAccount;
+import com.ssdi.studentbudgetcenterentity.BudgetItem;
 import com.ssdi.studentbudgetcenterentity.User;
 
 public class UserController {
@@ -40,5 +43,44 @@ public class UserController {
 		UserTableDataGateway utd=new UserTableDataGateway();
 		String str=utd.insertUser(user);
 			return str;
+		}
+	
+	public String createBudget(String username,Map<String, String[]> map) throws IOException {
+	
+		double food=Double.parseDouble(map.get("exp1")[0]);
+		double education=Double.parseDouble(map.get("exp2")[0]);
+		double transport=Double.parseDouble(map.get("exp3")[0]);
+		double entertainment=Double.parseDouble(map.get("exp4")[0]);
+		double misc=Double.parseDouble(map.get("exp5")[0]);
+		ArrayList<BudgetItem> items=new ArrayList<BudgetItem>();
+		BudgetItem bi1=new BudgetItem();
+		bi1.setUsername(username);
+		bi1.setCategory("Food");
+		bi1.setBudgetTarget(food);
+		items.add(bi1);
+		BudgetItem bi2=new BudgetItem();
+		bi2.setUsername(username);
+		bi2.setCategory("Education");
+		bi2.setBudgetTarget(education);
+		items.add(bi2);
+		BudgetItem bi3=new BudgetItem();
+		bi3.setUsername(username);
+		bi3.setCategory("Transport");
+		bi3.setBudgetTarget(transport);
+		items.add(bi3);
+		BudgetItem bi4=new BudgetItem();
+		bi4.setUsername(username);
+		bi4.setCategory("Entertainment");
+		bi4.setBudgetTarget(entertainment);
+		items.add(bi4);
+		BudgetItem bi5=new BudgetItem();
+		bi5.setUsername(username);
+		bi5.setCategory("Miscellaneous");
+		bi5.setBudgetTarget(misc);
+		items.add(bi5);
+		BudgetItemTableDataGateway bitd=new BudgetItemTableDataGateway();
+		String str=bitd.insertBudgetItem(items);
+			return str;
+
 		}
 }
