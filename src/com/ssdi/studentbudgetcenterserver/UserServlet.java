@@ -51,6 +51,12 @@ public class UserServlet {
 			UserController userCon = new UserController();
 		str = userCon.createBudget(username,servletRequest.getParameterMap());
 		}
+		else if(methodName.equalsIgnoreCase("transactions")){
+			HttpSession session=servletRequest.getSession();
+			String username=(String)session.getAttribute("user");
+			UserController userCon = new UserController();
+		str = userCon.createTransaction(username,servletRequest.getParameterMap());
+		}
 		return createJsonString(str);
 	}
 

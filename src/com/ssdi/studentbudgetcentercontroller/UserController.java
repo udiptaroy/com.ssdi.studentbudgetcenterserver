@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.ssdi.studentbudgetcenterTDGateway.BudgetItemTableDataGateway;
+import com.ssdi.studentbudgetcenterTDGateway.TransactionTableDataGateway;
 import com.ssdi.studentbudgetcenterTDGateway.UserTableDataGateway;
 import com.ssdi.studentbudgetcenterentity.BankAccount;
 import com.ssdi.studentbudgetcenterentity.BudgetItem;
+import com.ssdi.studentbudgetcenterentity.Transaction;
 import com.ssdi.studentbudgetcenterentity.User;
 
 public class UserController {
@@ -83,4 +85,26 @@ public class UserController {
 			return str;
 
 		}
+	public String createTransaction(String username, Map<String, String[]> map) throws IOException {
+		ArrayList<Transaction> tran=new ArrayList<Transaction>();
+		
+		for(int i=1 ;i<6;i++){
+			String desc1=map.get("itm"+i)[0];
+			String cat1=map.get("cat"+i)[0];
+			Double exp1=Double.parseDouble(map.get("exp"+i)[0]);
+			String dt1=map.get("dt"+i)[0];
+			if(!(desc1.equals("")||cat1.equals("")||dt1.equals(""))){
+				Transaction t1=new Transaction();
+				t1.setTransactionDesc(desc1);
+				t1.setBudgetCategory(cat1);
+				t1.setTransactionAmt(exp1);
+				t1.setTransactionDate(dt1);
+			tran.add(t1);
+			}
+		}
+		
+		TransactionTableDataGateway ttdg=new TransactionTableDataGateway();
+		String str=ttdg.insertTransaction(username,tran);
+		return str;
+	}
 }
