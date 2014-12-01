@@ -106,8 +106,8 @@ public class UserTableDataGateway {
 	      // Assuming you are sending email from localhost
 	      properties.put("mail.smtp.starttls.enable", "true"); 
 	      properties.put("mail.smtp.host", "smtp.gmail.com");
-	      properties.put("mail.smtp.user", ""); // User name
-	      properties.put("mail.smtp.password", ""); // password
+	      properties.put("mail.smtp.user", "udiptaroy@gmail.com"); // User name
+	      properties.put("mail.smtp.password", "focus123#"); // password
 	      properties.put("mail.smtp.port", "587");
 	      properties.put("mail.smtp.auth", "true");
 
@@ -122,7 +122,7 @@ public class UserTableDataGateway {
 	    		    new javax.mail.Authenticator(){
 	    		        protected PasswordAuthentication getPasswordAuthentication() {
 	    		            return new PasswordAuthentication(
-	    		                "", "");// Specify the Username and the PassWord
+	    		                "udiptaroy@gmail.com", "focus123#");// Specify the Username and the PassWord
 	    		        }
 	    		});
 
@@ -158,8 +158,28 @@ public class UserTableDataGateway {
 		return true;
 	}
 	
-	public String updateUser(){
-		return null;
+	public String updateUser(User user1){
+		boolean result1=false, result2=false;
+		Connection conn=DBConnection.getInstance().getConnection();
+		PreparedStatement preparedstatement=null,preparedstatement1=null,preparedstatement2=null;
+		  try {
+			  	preparedstatement=conn.prepareStatement("use studbudctr;");
+				preparedstatement.execute();
+				preparedstatement1=conn.prepareStatement("update user set Password='"+user1.getPassword()+"', PasswordSeed="+user1.getPasswordseed()+", Email='"+user1.getEmail()+"', Emailcount="+user1.getEmailcount()+" where username='"+user1.getUsername()+"';");
+				preparedstatement1.execute();
+				result1=true;
+				preparedstatement2=conn.prepareStatement("update BankAccount set AccountNumber='"+user1.getAccount()+"' where username='"+user1.getUsername()+"';");
+				result2=preparedstatement2.execute();
+				result2=true;
+				if(result1== true && result2==true)
+				return "SUCCESS";
+					else
+						return "ERROR";
+		    }catch (Exception ex) {
+
+		        System.out.println(ex.getMessage());
+		        return ex.getLocalizedMessage();
+		          }
 	}
 	
 }

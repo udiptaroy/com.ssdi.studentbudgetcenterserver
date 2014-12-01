@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
+import com.ssdi.studentbudgetcentercontroller.ReportController;
 import com.ssdi.studentbudgetcentercontroller.UserController;
 import com.ssdi.studentbudgetcenterentity.User;
 
@@ -57,13 +58,45 @@ public class UserServlet {
 			UserController userCon = new UserController();
 		str = userCon.createTransaction(username,servletRequest.getParameterMap());
 		}
+		else if(methodName.equalsIgnoreCase("historicalreports")){
+			HttpSession session=servletRequest.getSession();
+			String username=(String)session.getAttribute("user");
+			ReportController rc=new ReportController();
+		str=rc.generateBudgetReport(username);
+		}
+		else if(methodName.equalsIgnoreCase("comparereports")){
+			HttpSession session=servletRequest.getSession();
+			String username=(String)session.getAttribute("user");
+			ReportController rc=new ReportController();
+			str=rc.compareBudgetReport(username);
+			}
+		else if(methodName.equalsIgnoreCase("updateAccount")){
+			HttpSession session=servletRequest.getSession();
+			String username=(String)session.getAttribute("user");
+			UserController userCon = new UserController();
+		str = userCon.createTransaction(username,servletRequest.getParameterMap());
+		}
+				
+		
 		return createJsonString(str);
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String GetUsername() {
-		return "Username1";
+	@Produces("application/jsonp")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getUsername(@Context HttpServletResponse servletResponse,
+			@Context HttpServletRequest servletRequest) throws IOException  {
+		String methodName=servletRequest.getParameter("methodName");
+		if(methodName.equalsIgnoreCase("getUserData")){
+			HttpSession session=servletRequest.getSession();
+			String username=(String)session.getAttribute("user");
+			UserController userCon = new UserController();
+			User s = userCon.getUser(username);
+			 servletResponse.getWriter().write(new Gson().toJson(s));
+				System.out.println("str is = "+s);
+				System.out.println("response created");
+		}
+		
 	}
 	private String createJsonString(String str) {
 		Gson gson = new Gson(); 

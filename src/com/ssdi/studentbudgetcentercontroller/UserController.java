@@ -30,6 +30,21 @@ public class UserController {
 			return "no user selected.";
 		}
 	}
+	public User getUser(String username) throws IOException {
+		User user = new User();
+		
+		if(!username.equalsIgnoreCase("")){
+			UserTableDataGateway utg = new UserTableDataGateway();
+			user = utg.getUser(username);
+			if(user!= null)
+				return user;
+			else{
+				return null;
+			}
+		}else{
+			return null;
+		}
+	}
 	public String createUser(Map<String, String[]> map) throws IOException {
 		String username = map.get("username2")[0];
 		String password = map.get("password2")[0];
@@ -107,4 +122,18 @@ public class UserController {
 		String str=ttdg.insertTransaction(username,tran);
 		return str;
 	}
+	public String updateAccount(Map<String, String[]> map) throws IOException {
+		String password = map.get("password")[0];
+		String email = map.get("email")[0];
+		String account = map.get("bankaccount")[0];
+		User user1=new User();
+		user1.setPassword(password);
+		user1.setPasswordseed(0);
+		user1.setEmail(email);
+		user1.setEmailcount(0);
+		user1.setAccount(account);
+		UserTableDataGateway utdg=new UserTableDataGateway();
+		String str=utdg.updateUser(user1);
+			return str;
+		}
 }
