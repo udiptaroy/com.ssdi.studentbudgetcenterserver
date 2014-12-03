@@ -17,7 +17,7 @@ public class DBConnection {
 	private DBConnection() throws Exception{
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connection=DriverManager.getConnection("jdbc:mysql://localhost/udipta","root","soumita123");
+			connection=DriverManager.getConnection("jdbc:mysql://localhost","root","");
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}catch(ClassNotFoundException ex){
