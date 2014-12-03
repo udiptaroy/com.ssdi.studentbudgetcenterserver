@@ -1,12 +1,16 @@
 package com.ssdi.studentbudgetcentercontroller;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.ssdi.studentbudgetcenterTDGateway.FriendRequestTableDataGateway;
+import com.ssdi.studentbudgetcenterTDGateway.TransactionTableDataGateway;
 import com.ssdi.studentbudgetcenterTDGateway.TransferRequestTableDataGateway;
 import com.ssdi.studentbudgetcenterTDGateway.UserTableDataGateway;
 import com.ssdi.studentbudgetcenterentity.FriendRequest;
+import com.ssdi.studentbudgetcenterentity.Transaction;
 import com.ssdi.studentbudgetcenterentity.TransferRequest;
 
 public class RequestController {
@@ -64,9 +68,25 @@ public class RequestController {
 			TransferRequest currentRequest = gateway
 					.getTransferRequest(requestID);
 
+			ArrayList<Transaction> transList = new ArrayList<Transaction>();
+			TransactionTableDataGateway transactionGateway = new TransactionTableDataGateway();
+
+			Transaction newTransaction = new Transaction();
+			newTransaction.setBudgetCategory("Transfer");
+			newTransaction.setTransactionAmt(currentRequest.getTransferAmt());
+
+			java.util.Date date = new Date();
+			Timestamp timestamp = new Timestamp(date.getTime());
+
+			newTransaction.setTransactionDate(timestamp.toString());
+			newTransaction.setTransactionDesc(currentRequest.getSentFrom()
+					.getUsername());
+			transList.add(newTransaction);
+			transactionGateway.insertTransaction(currentRequest.getSentTo()
+					.getUsername(), transList);
+
 		}
 		gateway.ProcessTransferRequest(requestID, newStatus);
 		return true;
 	}
-
 }
