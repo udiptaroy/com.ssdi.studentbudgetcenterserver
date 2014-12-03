@@ -1,9 +1,9 @@
 package com.ssdi.studentbudgetcentercontroller;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,6 +14,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.xml.DatasetReader;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,10 +31,16 @@ public class ReportController {
 	
 	public String generateBudgetReport(String username){
 		try{
+		ArrayList<CompareObject> pie=new ArrayList<CompareObject>();
 		ArrayList<Transaction> tran=new ArrayList<Transaction>();
 		TransactionTableDataGateway ttdg=new TransactionTableDataGateway();
 		tran=ttdg.getTransaction(username);
-		writeXmlFileBudgetReport(tran,"budgetReport");
+		pie=ttdg.getOwnTotal(username);
+		generatePieChart(pie,"BudgetExpPie","BudgetExpense");
+		writeXmlFileBudgetReport(tran,"BudgetReport");
+		writeXmlFileCompReport(pie,"PieData");
+		
+		
 		return "SUCCESS";
 		}
 		catch(Exception ex){
@@ -43,8 +55,10 @@ public class ReportController {
 		TransactionTableDataGateway ttdg=new TransactionTableDataGateway();
 		tranOwn=ttdg.getOwnTotal(username);
 		tranOthers=ttdg.getOthersTotal(username);
-		writeXmlFileCompReport(tranOwn,"OwnData");
-		writeXmlFileCompReport(tranOthers,"OthersData");
+		//writeXmlFileCompReport(tranOwn,"OwnData");
+		//writeXmlFileCompReport(tranOthers,"OthersData");
+		generatePieChart(tranOwn,"PieOwn","OwnExpense");
+		generatePieChart(tranOthers,"PieOther","Others Expense");
 		return "SUCCESS";
 		}
 		catch(Exception ex){
@@ -68,10 +82,13 @@ public class ReportController {
 
 	        
 
-
+	        	int i=1;
 	        for (Transaction dtl : list) {
 	        	Element Details = doc.createElement("Expense");
 		        root.appendChild(Details);
+		        Attr attribute = doc.createAttribute("id");  
+	        	   attribute.setValue(""+i);  
+	        	   Details.setAttributeNode(attribute);
 	            Element item = doc.createElement("Item");
 	            item.appendChild(doc.createTextNode(String.valueOf(dtl.getTransactionDesc())));
 	            Details.appendChild(item);
@@ -87,7 +104,7 @@ public class ReportController {
 	            Element amt = doc.createElement("Amount");
 	            amt.appendChild(doc.createTextNode(String.valueOf(dtl.getTransactionAmt())));
 	            Details.appendChild(amt);
-
+i++;
 	        }
 
 	        // Save the document to the disk file
@@ -104,10 +121,10 @@ public class ReportController {
 	        DOMSource source = new DOMSource(doc);
 	        try {
 	            // location and name of XML file you can change as per need
-	            FileWriter fos = new FileWriter("./"+filename+".xml");
+	            FileWriter fos = new FileWriter("C://Users/udiptaroy/Desktop/BudgetReport.xml");
 	            StreamResult result = new StreamResult(fos);
 	            aTransformer.transform(source, result);
-
+	            fos.close();
 	        } catch (IOException e) {
 
 	            e.printStackTrace();
@@ -128,25 +145,26 @@ public class ReportController {
 	        DocumentBuilder build = dFact.newDocumentBuilder();
 	        Document doc = build.newDocument();
 
-	        Element root = doc.createElement("BudgetDetails");
+	        Element root = doc.createElement("PieDataSet");
 	        doc.appendChild(root);
-
-	        
-
-
-	        for (CompareObject dtl : list) {
-	        	Element Details = doc.createElement("Expense");
-		        root.appendChild(Details);
-	               Element cat = doc.createElement("Category");
+	      
+	      int i=1;
+	             for (CompareObject dtl : list) {
+	        	Element Details = doc.createElement("item");
+	        	root.appendChild(Details);
+	        	  Attr attribute = doc.createAttribute("id");  
+	        	   attribute.setValue(""+i);  
+	        	   Details.setAttributeNode(attribute);
+	               Element cat = doc.createElement("Key");
 	            cat.appendChild(doc.createTextNode(String.valueOf(dtl.getBudgetCategory())));
 	            Details.appendChild(cat);
 
 	            	            
-	            Element amt = doc.createElement("Amount");
+	            Element amt = doc.createElement("Value");
 	            amt.appendChild(doc.createTextNode(String.valueOf(dtl.getAmount())));
 	            Details.appendChild(amt);
-
-	        }
+	            i++;
+	                  }
 
 	        // Save the document to the disk file
 	        TransformerFactory tranFactory = TransformerFactory.newInstance();
@@ -162,10 +180,10 @@ public class ReportController {
 	        DOMSource source = new DOMSource(doc);
 	        try {
 	            // location and name of XML file you can change as per need
-	            FileWriter fos = new FileWriter("./"+filename+".xml");
+	            FileWriter fos = new FileWriter("../com.ssdi.studentbudgetcenterwebclient/WebContent/resources/"+filename+".xml");
 	            StreamResult result = new StreamResult(fos);
 	            aTransformer.transform(source, result);
-
+	            fos.close();
 	        } catch (IOException e) {
 
 	            e.printStackTrace();
@@ -178,8 +196,30 @@ public class ReportController {
 	        System.out.println("Error building document");
 	    }
 	}	
+	 public static void generatePieChart(ArrayList<CompareObject> co,String filename,String caption) throws Exception {
+		 try{
+	        DefaultPieDataset dataSet = new DefaultPieDataset();
+	        for(CompareObject c:co){
+	        dataSet.setValue(c.getBudgetCategory(), c.getAmount());
+	        }
+	 
+	        JFreeChart chart = ChartFactory.createPieChart(
+	                caption, dataSet, true, true, false);
+	        int width=640; 
+            int height=480;   
+            float quality=1; /* Quality factor */
+	        
+	        File BarChart=new File("../com.ssdi.studentbudgetcenterwebclient/WebContent/resources/"+filename+".png");              
+	        ChartUtilities.saveChartAsJPEG(BarChart, quality, chart,width,height);
+		 }
+		 catch(Exception ex){
+			 ex.printStackTrace();
+		 }
+	        
+	    }
+	 
 public static void main(String[] args){
 	ReportController rc = new ReportController();
-	rc.compareBudgetReport("Soumita3");
+	rc.compareBudgetReport("Soumita2");
 }
 }

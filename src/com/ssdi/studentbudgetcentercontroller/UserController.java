@@ -35,7 +35,7 @@ public class UserController {
 		
 		if(!username.equalsIgnoreCase("")){
 			UserTableDataGateway utg = new UserTableDataGateway();
-			user = utg.getUser(username);
+			user = utg.getUser1(username);
 			if(user!= null)
 				return user;
 			else{

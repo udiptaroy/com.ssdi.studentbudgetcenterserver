@@ -21,7 +21,7 @@ import com.ssdi.studentbudgetcenterentity.User;
 
 @Path("/usercontroller")
 public class UserServlet {
-
+	HttpSession session;
 	@POST
 	@Produces("application/jsonp")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -34,44 +34,44 @@ public class UserServlet {
 			UserController userCon = new UserController();
 			str = userCon.getUser(servletRequest.getParameterMap());
 			if(str.equals("SUCCESS")){
-				HttpSession session=servletRequest.getSession();
-				session.setAttribute("user",  servletRequest.getParameterMap().get("username")[0]);
+				session=servletRequest.getSession();
+				session.setAttribute("user", servletRequest.getParameter("username"));
 			}
 		}
 		else if(methodName.equalsIgnoreCase("register")){
 			UserController userCon = new UserController();
 			str = userCon.createUser(servletRequest.getParameterMap());
 			if(str.equals("SUCCESS")){
-				HttpSession session=servletRequest.getSession();
-				session.setAttribute("user",  servletRequest.getParameterMap().get("username2")[0]);
+				session=servletRequest.getSession();
+				session.setAttribute("user",  servletRequest.getParameter("username2"));
 			}
 		}
 		else if(methodName.equalsIgnoreCase("setbudgoals")){
-			HttpSession session=servletRequest.getSession();
+			session=servletRequest.getSession();
 			String username=(String)session.getAttribute("user");
 			UserController userCon = new UserController();
 		str = userCon.createBudget(username,servletRequest.getParameterMap());
 		}
 		else if(methodName.equalsIgnoreCase("transactions")){
-			HttpSession session=servletRequest.getSession();
+			session=servletRequest.getSession();
 			String username=(String)session.getAttribute("user");
 			UserController userCon = new UserController();
 		str = userCon.createTransaction(username,servletRequest.getParameterMap());
 		}
 		else if(methodName.equalsIgnoreCase("historicalreports")){
-			HttpSession session=servletRequest.getSession();
+			session=servletRequest.getSession();
 			String username=(String)session.getAttribute("user");
 			ReportController rc=new ReportController();
 		str=rc.generateBudgetReport(username);
 		}
 		else if(methodName.equalsIgnoreCase("comparereports")){
-			HttpSession session=servletRequest.getSession();
+			session=servletRequest.getSession();
 			String username=(String)session.getAttribute("user");
 			ReportController rc=new ReportController();
 			str=rc.compareBudgetReport(username);
 			}
 		else if(methodName.equalsIgnoreCase("updateAccount")){
-			HttpSession session=servletRequest.getSession();
+			session=servletRequest.getSession();
 			String username=(String)session.getAttribute("user");
 			UserController userCon = new UserController();
 		str = userCon.createTransaction(username,servletRequest.getParameterMap());
@@ -83,18 +83,28 @@ public class UserServlet {
 
 	@GET
 	@Produces("application/jsonp")
-	@Consumes(MediaType.APPLICATION_JSON)
+	/*@Consumes(MediaType.APPLICATION_JSON)*/
 	public void getUsername(@Context HttpServletResponse servletResponse,
 			@Context HttpServletRequest servletRequest) throws IOException  {
-		String methodName=servletRequest.getParameter("methodName");
+		String methodName=servletRequest.getParameter("methodID");
 		if(methodName.equalsIgnoreCase("getUserData")){
-			HttpSession session=servletRequest.getSession();
+			session=servletRequest.getSession();
 			String username=(String)session.getAttribute("user");
 			UserController userCon = new UserController();
 			User s = userCon.getUser(username);
 			 servletResponse.getWriter().write(new Gson().toJson(s));
 				System.out.println("str is = "+s);
 				System.out.println("response created");
+		}
+		else if(methodName.equalsIgnoreCase("historicalreports")){
+			session=servletRequest.getSession();
+		String username=(String)session.getAttribute("user");
+			//String username = (String) ((Object[])session.getAttribute("user"))[0];
+			ReportController rc=new ReportController();
+		String res=rc.generateBudgetReport(username);
+		 servletResponse.getWriter().write(new Gson().toJson(res));
+		 System.out.println("str is = "+res);
+			System.out.println("response created");
 		}
 		
 	}

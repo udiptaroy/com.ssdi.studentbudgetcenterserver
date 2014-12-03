@@ -29,6 +29,7 @@ public class BudgetItemTableDataGateway {
 					
 					result=true;
 				}
+				
 					if(result)
 				return res;
 					else
@@ -55,7 +56,7 @@ public String insertBudgetItem(ArrayList<BudgetItem> listbuditem){
 			}
 							
 				result=true;
-			
+				
 				if(result)
 			return "SUCCESS";
 				else
@@ -78,7 +79,7 @@ public String deleteBudgetItem(String username){
 				preparedstatement1.execute();
 								
 				result=true;
-			
+				
 				if(result)
 			return "SUCCESS";
 				else

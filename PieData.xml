@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<PieDataSet>
+    <Item>
+        <Key>Food</Key>
+        <Value>23.0</Value>
+    </Item>
+    <Item>
+        <Key>Miscellaneous</Key>
+        <Value>34.0</Value>
+    </Item>
+    <Item>
+        <Key>Transport</Key>
+        <Value>146.0</Value>
+    </Item>
+</PieDataSet>

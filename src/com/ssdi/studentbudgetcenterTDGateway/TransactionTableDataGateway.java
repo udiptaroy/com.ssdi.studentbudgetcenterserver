@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.ssdi.studentbudgetcenterDataStore.DBConnection;
 import com.ssdi.studentbudgetcenterentity.BudgetItem;
@@ -31,7 +32,7 @@ public class TransactionTableDataGateway {
 					}
 								
 
-				
+					
 				return tran;
 		    }catch (Exception ex) {
 
@@ -55,7 +56,7 @@ public class TransactionTableDataGateway {
 					preparedstatement1=conn.prepareStatement("insert into Transaction (BudgetCategory,transactionDate,transactionAmount,description,Username)values ('"+cat+"','"+dt+"',"+amt+",'"+desc+"','"+username+"');");
 					preparedstatement1.execute();
 				}
-								
+							
 					result=true;
 				
 					if(result)
@@ -85,20 +86,17 @@ public class TransactionTableDataGateway {
 					while(rs1.next()){
 					count=rs1.getInt(1);
 					}
-					System.out.println(count);
-										
+															
 					while(rs.next()){
 						CompareObject co=new CompareObject();
 						co.setBudgetCategory(rs.getString(1));
-						System.out.println(co.getBudgetCategory());
 						co.setAmount((rs.getDouble(2))/(double)(count));
-						System.out.println(co.getAmount());
 						colist.add(co);
 						
 					}
 								
 
-				
+					
 				return colist;
 		    }catch (Exception ex) {
 
@@ -107,27 +105,29 @@ public class TransactionTableDataGateway {
 		          }
 
 	}
-	public  ArrayList<CompareObject> getOwnTotal(String username){
-		ArrayList<CompareObject> colist=new ArrayList<CompareObject>();
+	public ArrayList<CompareObject> getOwnTotal(String username){
 		Connection conn=DBConnection.getInstance().getConnection();
 		PreparedStatement preparedstatement=null,preparedstatement1=null;
+		
+		ArrayList<CompareObject> colist=new ArrayList<CompareObject>();
 		  try {
 			  	preparedstatement=conn.prepareStatement("use studbudctr;");
 				preparedstatement.execute();
 				
 					preparedstatement1=conn.prepareStatement("select BudgetCategory,sum(transactionAmount) from Transaction  where username='"+username+"' group by BudgetCategory;");
 					ResultSet rs=preparedstatement1.executeQuery();
-										
+					
+																			
 					while(rs.next()){
 						CompareObject co=new CompareObject();
 						co.setBudgetCategory(rs.getString(1));
-						co.setAmount((rs.getDouble(2)));
+						co.setAmount(rs.getDouble(2));
 						colist.add(co);
 						
 					}
 								
 
-				
+					
 				return colist;
 		    }catch (Exception ex) {
 
@@ -135,9 +135,7 @@ public class TransactionTableDataGateway {
 		        return null;
 		          }
 
-
 	}
-
 
 	public String deleteTransaction(String username){
 		return "SUCCESS";
