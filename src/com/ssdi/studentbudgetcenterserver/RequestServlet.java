@@ -18,7 +18,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.Gson;
+import com.ssdi.studentbudgetcenterTDGateway.UserTableDataGateway;
 import com.ssdi.studentbudgetcentercontroller.RequestController;
+import com.ssdi.studentbudgetcentercontroller.UserController;
 import com.ssdi.studentbudgetcenterentity.FriendRequest;
 import com.ssdi.studentbudgetcenterentity.TransferRequest;
 
@@ -35,8 +37,7 @@ public class RequestServlet {
 			@Context HttpServletRequest servletRequest) throws IOException {
 
 		HttpSession session = servletRequest.getSession();
-		String username = "PhilTest";// (String)
-										// session.getAttribute("user");
+		String username = (String) session.getAttribute("user");
 
 		params = servletRequest.getParameterMap();
 		String methodName = null;
@@ -57,6 +58,8 @@ public class RequestServlet {
 			currentTransferRequests = RequestCon.getTransferRequests(username);
 			Gson gson = new Gson();
 			jsonString = gson.toJson(currentTransferRequests);
+		} else if (methodName.equalsIgnoreCase("getUserNames")) {
+			jsonString = UserController.getUserNames();
 		}
 
 		return jsonString;
@@ -69,8 +72,7 @@ public class RequestServlet {
 			@Context HttpServletRequest servletRequest) throws IOException {
 
 		HttpSession session = servletRequest.getSession();
-		String username = "PhilTest";// (String)
-										// session.getAttribute("user");
+		String username = (String) session.getAttribute("user");
 
 		params = servletRequest.getParameterMap();
 		String methodName = null;
