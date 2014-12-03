@@ -58,9 +58,15 @@ public class RequestController {
 		return gateway.getPendingTransferRequests(UserName);
 	}
 
-	public void ReplyToTransferRequest(int requestID, char newStatus) {
+	public boolean ReplyToTransferRequest(int requestID, char newStatus) {
 		TransferRequestTableDataGateway gateway = new TransferRequestTableDataGateway();
+		if (newStatus == 'A') {
+			TransferRequest currentRequest = gateway
+					.getTransferRequest(requestID);
+
+		}
 		gateway.ProcessTransferRequest(requestID, newStatus);
+		return true;
 	}
 
 }

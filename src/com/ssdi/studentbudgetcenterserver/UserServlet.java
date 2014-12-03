@@ -74,7 +74,7 @@ public class UserServlet {
 			session=servletRequest.getSession();
 			String username=(String)session.getAttribute("user");
 			UserController userCon = new UserController();
-		str = userCon.updateAccount(username,servletRequest.getParameterMap());
+		//str = userCon.updateAccount(username,servletRequest.getParameterMap());
 		}
 				
 		

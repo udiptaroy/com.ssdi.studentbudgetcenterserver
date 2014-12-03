@@ -147,11 +147,19 @@ public class RequestServlet {
 			String sendTo = "";
 			if (params.containsKey("sendto")) {
 				sendTo = params.get("sendto")[0];
+			} else {
+				return false;
 			}
 
 			Double amount = null;
 			if (params.containsKey("amount")) {
-				amount = Double.parseDouble(params.get("amount")[0]);
+				try {
+					amount = Double.parseDouble(params.get("amount")[0]);
+				} catch (NumberFormatException e) {
+					return false;
+				}
+			} else {
+				return false;
 			}
 
 			RequestCon.createTransferRequest(username, sendTo, amount);
