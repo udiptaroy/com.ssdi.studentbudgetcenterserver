@@ -31,14 +31,18 @@ public class ReportController {
 	
 	public String generateBudgetReport(String username){
 		try{
-		ArrayList<CompareObject> pie=new ArrayList<CompareObject>();
+		ArrayList<CompareObject> pie1=new ArrayList<CompareObject>();
+		ArrayList<CompareObject> pie2=new ArrayList<CompareObject>();
 		ArrayList<Transaction> tran=new ArrayList<Transaction>();
 		TransactionTableDataGateway ttdg=new TransactionTableDataGateway();
 		tran=ttdg.getTransaction(username);
-		pie=ttdg.getOwnTotal(username);
-		generatePieChart(pie,"BudgetExpPie","BudgetExpense");
+		pie1=ttdg.getOwnTotal(username);
+		pie2=ttdg.getOthersTotal(username);
 		writeXmlFileBudgetReport(tran,"BudgetReport");
-		writeXmlFileCompReport(pie,"PieData");
+		generatePieChart(pie1,"PieOwn","PieOwn");
+		generatePieChart(pie2,"PieOther","PieOther");
+		
+		
 		
 		
 		return "SUCCESS";
@@ -121,7 +125,7 @@ i++;
 	        DOMSource source = new DOMSource(doc);
 	        try {
 	            // location and name of XML file you can change as per need
-	            FileWriter fos = new FileWriter("C://Users/udiptaroy/Desktop/BudgetReport.xml");
+	            FileWriter fos = new FileWriter("C:/Users/udiptaroy/Desktop/StudentBudgetCenterWorkspace/StudentBudgetCenterWorkspace/com.ssdi.studentbudgetcenterwebclient/WebContent/resources/BudgetReport.xml");
 	            StreamResult result = new StreamResult(fos);
 	            aTransformer.transform(source, result);
 	            fos.close();
@@ -209,7 +213,8 @@ i++;
             int height=480;   
             float quality=1; /* Quality factor */
 	        
-	        File BarChart=new File("../com.ssdi.studentbudgetcenterwebclient/WebContent/resources/"+filename+".png");              
+	       // File BarChart=new File("../com.ssdi.studentbudgetcenterwebclient/WebContent/resources/"+filename+".png"); 
+	        File BarChart=new File("C:/Users/udiptaroy/Desktop/StudentBudgetCenterWorkspace/StudentBudgetCenterWorkspace/com.ssdi.studentbudgetcenterwebclient/WebContent/resources/"+filename+".png");
 	        ChartUtilities.saveChartAsJPEG(BarChart, quality, chart,width,height);
 		 }
 		 catch(Exception ex){
