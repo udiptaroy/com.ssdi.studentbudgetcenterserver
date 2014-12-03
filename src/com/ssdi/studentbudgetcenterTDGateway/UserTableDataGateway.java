@@ -162,20 +162,28 @@ public class UserTableDataGateway {
 	}
 	
 	public String updateUser(User user1){
-		boolean result1=false, result2=false;
+		boolean result1=false, result2=false,result3=false;
 		Connection conn=DBConnection.getInstance().getConnection();
-		PreparedStatement preparedstatement=null,preparedstatement1=null,preparedstatement2=null;
+		PreparedStatement preparedstatement=null,preparedstatement1=null,preparedstatement2=null,preparedstatement3=null;
 		  try {
 			  	preparedstatement=conn.prepareStatement("use studbudctr;");
 				preparedstatement.execute();
-				preparedstatement1=conn.prepareStatement("update user set Password='"+user1.getPassword()+"', PasswordSeed="+user1.getPasswordseed()+", Email='"+user1.getEmail()+"', Emailcount="+user1.getEmailcount()+" where username='"+user1.getUsername()+"';");
+				if(!(user1.getPassword().equals(""))){
+				preparedstatement1=conn.prepareStatement("update user set password='"+user1.getPassword()+"' where username='"+user1.getUsername()+"';");
 				preparedstatement1.execute();
 				result1=true;
+				}
+				if(!(user1.getAccount().equals(""))){
 				preparedstatement2=conn.prepareStatement("update BankAccount set AccountNumber='"+user1.getAccount()+"' where username='"+user1.getUsername()+"';");
 				result2=preparedstatement2.execute();
 				result2=true;
-				
-				if(result1== true && result2==true)
+				}
+				if(!(user1.getEmail().equals(""))){
+					preparedstatement3=conn.prepareStatement("update user set password='"+user1.getEmail()+"' where username='"+user1.getUsername()+"';");
+					result3=preparedstatement3.execute();
+					result3=true;
+					}
+				if(result1== true || result2==true|| result3==true)
 				return "SUCCESS";
 					else
 						return "ERROR";
